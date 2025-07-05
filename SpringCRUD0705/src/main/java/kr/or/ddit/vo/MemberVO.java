@@ -3,7 +3,7 @@ package kr.or.ddit.vo;
 import lombok.Data;
 
 @Data
-public class Member {
+public class MemberVO {
 	private String memId; /*  */
 	private String memPw; /*  */
 	private String memName; /*  */
