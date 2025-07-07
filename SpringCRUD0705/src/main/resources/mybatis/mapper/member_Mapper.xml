@@ -10,4 +10,24 @@
 			#{memId}, #{memPw}, #{memName}, #{memBirthDate}, #{memGender}, #{memEmail}, #{memNation}, #{memPhone}
 		)
   	</insert>
+  	
+  	<select id="memberDetail" parameterType="String" resultType="memberVO">
+  		select
+  			mem_id, mem_pw, mem_name, mem_birth_date, mem_gender, mem_email, mem_nation, mem_phone
+		from mempractice
+		where mem_id = #{memId}
+  	</select>
+  	
+  	<update id="memberUpdate" parameterType="memberVO">
+  		update mempractice
+  		set
+  			<if test="memPw !=null and memPw != ''">mem_pw = #{memPw},</if>
+  			mem_name = #{memName},
+  			mem_birth_date = #{memBirthDate},
+  			mem_gender = #{memGender},
+  			<if test="memEmail !=null and memEmail != ''">mem_email = #{memEmail},</if>
+  			mem_nation = #{memNation},
+  			mem_phone = #{memPhone}
+  		where mem_id=#{memId}
+  	</update>
   </mapper>

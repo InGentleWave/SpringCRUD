@@ -6,4 +6,8 @@ public interface IMemberService {
 
 	public int memberInsert(MemberVO memberVO);
 
+	public MemberVO memberDetail(String memId);
+
+	public int memberUpdate(MemberVO memberVO);
+
 }

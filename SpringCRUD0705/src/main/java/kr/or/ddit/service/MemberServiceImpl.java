@@ -17,4 +17,14 @@ public class MemberServiceImpl implements IMemberService {
 		return mapper.memberInsert(memberVO);
 	}
 
+	@Override
+	public MemberVO memberDetail(String memId) {
+		return mapper.memberDetail(memId);
+	}
+
+	@Override
+	public int memberUpdate(MemberVO memberVO) {
+		return mapper.memberUpdate(memberVO);
+	}
+
 }

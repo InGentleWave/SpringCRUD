@@ -36,4 +36,38 @@ public class MemberController {
 		}
 		return goPage;
 	}
+	
+	@GetMapping("/detail.do")
+	public String memberDetail(String memId, Model model) {
+		log.info("memberDetail()실행");
+		log.debug("memId : {}",memId);
+		MemberVO memberVO = memberService.memberDetail(memId);
+		model.addAttribute("member",memberVO);
+		return "view";
+	}
+	
+	@GetMapping("/update.do")
+	public String memberUpdateForm(String memId,Model model) {
+		log.info("memberUpdateForm()실행");
+		log.debug("memId : {}",memId);
+		MemberVO memberVO = memberService.memberDetail(memId);
+		model.addAttribute("member",memberVO);
+		model.addAttribute("status","u");
+		return "updateForm";
+	}
+	
+	@PostMapping("/update.do")
+	public String memberUpdate(MemberVO memberVO,Model model) {
+		log.info("memberUpdate()실행");
+		log.debug("memberVO : {}",memberVO);
+		String goPage="";
+		int status = memberService.memberUpdate(memberVO);
+		if(status>0) {
+			goPage="redirect:/detail.do?memId="+memberVO.getMemId();
+		} else {
+			goPage="updateForm";
+			model.addAttribute("member",memberVO);
+		}
+		return goPage;
+	}
 }
