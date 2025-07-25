@@ -22,7 +22,7 @@ import com.itextpdf.layout.element.Paragraph;
  * Simple image example.
  */
 public class C01E03_ImageParagraph {
-	// 이미지 파일 크기 이슈 있음.
+	// 이미지 파일 크기 이슈 있음?
 //	public static final String DOG = "src/main/resources/img/sample.jpg";
 	public static final String DOG = "src/main/resources/img/chopa.jpg";
 //	public static final String DOG = "src/main/resources/img/python.bmp";

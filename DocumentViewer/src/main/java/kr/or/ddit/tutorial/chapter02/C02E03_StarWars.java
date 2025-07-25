@@ -35,15 +35,17 @@ public class C02E03_StarWars {
 
     public void createPdf(String dest) throws IOException {
 
-        //Initialize PDF document
+        // PDF 문서 초기화 (지정한 파일 경로에 PDF 생성)
         PdfDocument pdf = new PdfDocument(new PdfWriter(dest));
 
-        //Add new page
+        // A4 사이즈의 새 페이지 생성
         PageSize ps = PageSize.A4;
         PdfPage page = pdf.addNewPage(ps);
 
+        // PDF 페이지에 그릴 수 있는 낮은 레벨의 그래픽 객체 생성
         PdfCanvas canvas = new PdfCanvas(page);
 
+        // 화면에 출력할 텍스트 목록 생성 (스타워즈 Intro 텍스트)
         List<String> text = new ArrayList();
         text.add("         Episode V         ");
         text.add("  THE EMPIRE STRIKES BACK  ");
@@ -61,20 +63,30 @@ public class C02E03_StarWars {
         text.add("base on the remote ice world");
         text.add("of Hoth...");
 
-        //Replace the origin of the coordinate system to the top left corner
+        // 좌표계의 기준점을 페이지 좌측 상단(Top Left)으로 이동시킴
+        // PDF 기본 좌표계는 좌측 하단 (Left-Bottom)이기 때문에 위에서 아래로 텍스트를 출력하려 통합 변환 행렬 적용
         canvas.concatMatrix(1, 0, 0, 1, 0, ps.getHeight());
+
+        // 텍스트 출력 모드 시작
         canvas.beginText()
-                .setFontAndSize(PdfFontFactory.createFont(StandardFonts.COURIER_BOLD), 14)
-                .setLeading(14 * 1.2f)
-                .moveText(70, -40);
+            // 폰트 설정 (Courier Bold, 사이즈 14pt)
+            .setFontAndSize(PdfFontFactory.createFont(StandardFonts.COURIER_BOLD), 14)
+            // 줄간격 설정 (폰트 크기의 1.2배 사용)
+            .setLeading(14 * 1.2f)
+            // 텍스트 출력 시작 좌표 설정: x = 70, y = -40 (왼쪽 상단 모서리 기준 아래로 40pt 내려감)
+            .moveText(70, -40);
+
+        // 위에서 정의한 문자열 리스트를 줄 단위로 출력
         for (String s : text) {
-            //Add text and move to the next line
+            // 한 줄 출력 후 커서를 다음 줄로 이동
             canvas.newlineShowText(s);
         }
+
+        // 텍스트 출력 모드 종료
         canvas.endText();
 
-        //Close document
+        // PDF 문서 닫기 (리소스 해제 및 파일 저장)
         pdf.close();
-
     }
+
 }

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>iText 활용 PDF 생성</title>
+</head>
+<body>
+	<h1>Welcome</h1>
+	<form id="pdfForm" action="/api/pdf/preview" method="post" target="_blank">
+	
+	</form>
+	<button onclick="submitPdfForm()">새창에서 pdf 미리보기</button>
+	<button onclick="javascript:location.href='/api/pdf/download'">pdf다운</button>
+</body>
+<script type="text/javascript">
+function submitPdfForm(){
+	  // 필요한 hidden input 등 생성 혹은 갱신
+
+	  document.querySelector('#pdfForm').submit();
+	}
+</script>
+</html>

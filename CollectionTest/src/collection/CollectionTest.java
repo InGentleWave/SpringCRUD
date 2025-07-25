@@ -18,8 +18,13 @@ public class CollectionTest {
 		list.add("1");
 		list.add(2);
 		list.add(true);
-		list.add
+		list.add('A');
+		String[] strArray = {"cat","dog"};
+		list.add(strArray);
 		// 3) list에 등록된 데이터 모두를 출력해주세요.
+		for(int i=0;i<list.size();i++) {
+			System.out.print(i+"번째 인자 : "+list.get(i));
+		}
 		// 4) list에 index가 짝수번째인 데이터 모두를 "짝수"라는 문자열로 변경해주세요.
 		// 5) list에 등록된 데이터 모두를 출력해주세요.
 		// 6) list에 등록된 데이터 중, index 3번째에 해당하는 데이터를 삭제해주세요.
