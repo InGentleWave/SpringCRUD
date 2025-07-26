@@ -60,8 +60,13 @@ public class MemberPdfTemplate implements IPdfTemplate {
 		Document document = new Document(pdfDocument,pageSize);
 		
 	/* PDF 문서 양식 데이터 생성 Start--------------------------------------------*/
-		
-		/* 1. 표로 출력할 데이터 생성	-------------------------------------------*/		
+		/* 1. 문서 제목 생성--------------------------------------------------*/
+		// Paragraph 요소 객체는 일반적인 문단 객체입니다.
+		Paragraph Title = new Paragraph("Member List 회원 리스트")
+			// 메소드 체이닝으로 폰트 설정(setFont), 글자 크기 설정(setFontSize), 글자 정렬(setTextAlignment)
+			// 등이 가능합니다.
+			.setFont(regularFont).setFontSize(30).setTextAlignment(TextAlignment.CENTER);
+		/* 2. 표로 출력할 데이터 생성	-------------------------------------------*/		
 		// VO 필드변수 정보 중 표로 출력할 변수명만 '{변수명 : 표 헤더명}' 형태로 입력
 		String[][] fields = {
 				{"userNo", "번호"},
@@ -75,12 +80,18 @@ public class MemberPdfTemplate implements IPdfTemplate {
 		// 배열 사이즈가 fields 사이즈와 다르면 표 생성이 제대로 이루어지지 않으므로 주의
 		float[] colRelativeWidths = {1,2,2,5,4};	// 배열 사이즈 => 생성되는 표의 컬럼 수
 		// 표 생성. 원하는 순서로 document.add(테이블변수명);하면 됩니다.
-		Table memberTable = mkTableByList(dataList, fields, colRelativeWidths, boldFont, regularFont,10);
+		// 표 내부 스타일 설정은 mkTableByList()에 세팅해주세요.
+		// 한 문서 안에 여러 개의 표 사용 시 폰트, 사이즈를 제외하고는 같은 스타일(헤더,내용의 글자 가운데 정렬 등)을 공유하게 됩니다.
+		Table memberTable = mkTableByList(dataList, fields, colRelativeWidths, boldFont, 10, regularFont, 10);
 		/* 표 설정 끝 --------------------------------------------------------*/
 		
 		
-	/* PDF 문서 양식 구성하기(객체 순서대로 배치)	--------------------------------*/
-		document.add(new Paragraph("Member List 회원 리스트").setFont(regularFont).setFontSize(30).setTextAlignment(TextAlignment.CENTER));
+	/* PDF 문서 양식 구성하기(객체 원하는 순서대로 문서에 추가)	--------------------------------*/
+		// 문서의 상단부터 원하는 요소부터 document.add(iText PDF 요소);
+		
+		// 문서 제목 추가
+		document.add(Title);
+		// Table 요소 (표 객체) 추가
 		document.add(memberTable);
 		
 		
@@ -123,8 +134,22 @@ public class MemberPdfTemplate implements IPdfTemplate {
 	        // 완성된 리스트를 문서에 추가합니다.
 	        document.add(list);
 	}
+	/**
+	 * 매개변수로 전달된 데이터를 이용하여 만든 Table 객체를 반환하는 메서드 (표 만들기 메서드)
+	 * @param dataList 표로 만드려는 VO를 담은 리스트
+	 * @param fields VO의 멤버변수명과 표의 헤더명을 {키:값} 형태로 갖는 2차 배열 
+	 * @param colRelativeWidths 각 컬럼의 너비 비율을 입력한 float 배열
+	 * @param headerFont 표 헤더명에 적용할 PdfFont
+	 * @param bodyFont 표 내용에 적용할 PdfFont
+	 * @param headerFontSize 표 헤더명 글자 크기
+	 * @param bodyFontSize 표 내용 글자 크기
+	 * @return iTextpdf Table 요소 객체
+	 * @throws Exception
+	 */
 	public Table mkTableByList(List<?> dataList,String[][] fields,float[] colRelativeWidths,
-								PdfFont headerFont, PdfFont bodyFont, float fontSize) throws Exception{
+								PdfFont headerFont, float headerFontSize, PdfFont bodyFont, float bodyFontSize) throws Exception{
+		// { vo 필드명 : 표 헤더명 }의 개수와 colRelativeWidths 개수가 일치하지 않으면 원하지 않는 표가 생성될 수 있습니다.
+		
 		/* 표 설정 */
 		// 헤더 맵 (필드명 -> 헤더명)
 	    Map<String, String> headerMap = new LinkedHashMap<>();
@@ -132,15 +157,20 @@ public class MemberPdfTemplate implements IPdfTemplate {
 	        headerMap.put(field[0], field[1]);
 	    }
 	    
-	    // 컬럼 개수는 변수로 입력한 
-		
 	    // 테이블 객체 생성
-	    Table table = new Table(UnitValue.createPercentArray(
-	    		colRelativeWidths))
+	    Table table = new Table(
+	    		// 입력한 배열 비율대로 각 컬럼의 너비 비율을 정합니다.
+	    		// 컬럼 개수는 변수로 입력한 colRelativeWidths 배열의 요소 개수와 같습니다. 
+	    		UnitValue.createPercentArray(colRelativeWidths))
+	    		// 사용가능한 모든 너비를 사용하는 옵션입니다.
 				.useAllAvailableWidth();
 		// 1) 헤더 추가
 	    for (String header : headerMap.values()) {
-	        table.addHeaderCell(new Cell().add(new Paragraph(header).setFont(headerFont).setFontSize(fontSize).setTextAlignment(TextAlignment.CENTER)));
+	        table.addHeaderCell(new Cell().add(
+        		new Paragraph(header)
+        			.setFont(headerFont).setFontSize(headerFontSize)
+        			.setTextAlignment(TextAlignment.CENTER))
+    		);
 	    }
 	    
 	    // 2) 데이터 행 추가
@@ -214,7 +244,11 @@ public class MemberPdfTemplate implements IPdfTemplate {
 		            // 테이블에 1칸씩 Cell객체를 추가합니다.
 		            // new Paragraph()자리에 문자열이나 다른 객체를 넣을 수 있습니다.
 		            // new Paragraph()객체를 사용함으로써 메소드체이닝으로 해당 내용에 대한 세팅을 간편하게 설정할 수 있습니다.
-	        		table.addCell(new Cell().add(new Paragraph(cellText).setFont(bodyFont).setFontSize(fontSize).setTextAlignment(TextAlignment.CENTER)));
+	        		table.addCell(new Cell().add(
+        				new Paragraph(cellText)
+        					.setFont(bodyFont).setFontSize(bodyFontSize)
+        					.setTextAlignment(TextAlignment.CENTER))
+    				);
 	        	} else {
 	        		// fieldName이 List가 아닌 경우의 Cell 추가 과정입니다.
 		            String getterName = "get" + fieldName.substring(0,1).toUpperCase() + fieldName.substring(1);
@@ -222,7 +256,11 @@ public class MemberPdfTemplate implements IPdfTemplate {
 		            Object value = getter.invoke(vo);
 		            // DB에서 조회된 결과가 없거나 ""인 경우 '-'을 출력합니다.
 		            cellText = value == null||value == "" ? "-" : value.toString();
-		            table.addCell(new Cell().add(new Paragraph(cellText).setFont(bodyFont).setFontSize(fontSize).setTextAlignment(TextAlignment.CENTER)));
+		            table.addCell(new Cell().add(
+	            		new Paragraph(cellText)
+	            			.setFont(bodyFont).setFontSize(bodyFontSize)
+	            			.setTextAlignment(TextAlignment.CENTER))
+            		);
 	        	}
 	        }
 	    }
