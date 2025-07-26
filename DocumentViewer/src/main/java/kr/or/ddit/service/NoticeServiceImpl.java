@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import kr.or.ddit.mapper.IMemberMapper;
+import kr.or.ddit.vo.CrudMember;
 import kr.or.ddit.vo.NoticeMemberVO;
 import lombok.extern.slf4j.Slf4j;
 
@@ -19,6 +20,11 @@ public class NoticeServiceImpl implements INoticeService {
 	@Override
 	public List<NoticeMemberVO> selectMemberList() {
 		return memberMapper.selectMemberList();
+	}
+
+	@Override
+	public List<CrudMember> selectCrudMemberList(List<String> authList) {
+		return memberMapper.selectCrudMemberList(authList);
 	}
 
 }

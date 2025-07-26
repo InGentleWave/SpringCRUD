@@ -96,6 +96,17 @@
 		    <version>${itext.version}</version>
 		</dependency>
 
+		<!--
+			p6spy
+			- 데이터베이스 쿼리 로깅 및 모니터링을 위한 라이브러리
+			- 실행한 SQL 쿼리를 확인하고, 실행 시간은 얼마나 걸리는지 등을 알려줍니다.
+			- JDBC 쿼리에서 ?로 표시되는 파라미터가 실제 어떤 값으로 바인딩되어 실행되었는지 함께 보여줍니다.
+		-->
+		<dependency>
+			<groupId>com.github.gavlyukovskiy</groupId>
+			<artifactId>p6spy-spring-boot-starter</artifactId>
+			<version>1.11.0</version>
+		</dependency>
 	</dependencies>
 
 	<build>

@@ -6,16 +6,20 @@
 </head>
 <body>
 	<h1>Welcome</h1>
-	<form id="pdfForm" action="/api/pdf/preview" method="post" target="_blank">
-	
+	<h4>회원 권한 별 조회하기</h4>
+	<form id="pdfForm" action="/api/pdf/memberList" method="post" target="_blank">
+		<!-- 데이터 정제 조건 input 태그로 담아 보내기 -->
+		<input type="checkbox" name="auth" value="ROLE_MEMBER"/> 회원<br/>
+		<input type="checkbox" name="auth" value="ROLE_ADMIN"/>	관리자<br/>
+		<input type="checkbox" name="auth" value="etc"/> 미인가자<br/>
+		
 	</form>
-	<button onclick="submitPdfForm()">새창에서 pdf 미리보기</button>
+	<button onclick="memberPdfPreview()">새창에서 회원리스트 pdf로 미리보기</button>
 	<button onclick="javascript:location.href='/api/pdf/download'">pdf다운</button>
 </body>
 <script type="text/javascript">
-function submitPdfForm(){
+function memberPdfPreview(){
 	  // 필요한 hidden input 등 생성 혹은 갱신
-
 	  document.querySelector('#pdfForm').submit();
 	}
 </script>

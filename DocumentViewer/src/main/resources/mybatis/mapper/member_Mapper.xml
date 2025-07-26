@@ -1,11 +1,63 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="kr.or.ddit.mapper.IMemberMapper">
-	<select id="selectMemberList" resultType="kr.or.ddit.vo.NoticeMemberVO">
+	<resultMap id="CrudMemberResultMap"
+		type="kr.or.ddit.vo.CrudMember">
+		<id property="userNo" column="user_no" />
+		<result property="userId" column="user_id" />
+		<result property="userName" column="user_name" />
+		<result property="regDate" column="reg_date" />
+		<!-- 다른 기본 컬럼들 추가 -->
+
+		<collection property="authList"
+			ofType="kr.or.ddit.vo.CrudMemberAuth">
+			<result property="userNo" column="user_no" />
+			<result property="auth" column="auth" />
+		</collection>
+	</resultMap>
+	<select id="selectMemberList"
+		resultType="kr.or.ddit.vo.NoticeMemberVO">
 		select
-			mem_no, mem_id, mem_pw, mem_name, mem_gender, mem_email, mem_phone, mem_postcode, 
-			mem_address1, mem_address2, mem_agree, mem_profileimg, mem_regdate
+		mem_no, mem_id, mem_pw, mem_name, mem_gender,
+		mem_email, mem_phone,
+		mem_postcode,
+		mem_address1, mem_address2,
+		mem_agree, mem_profileimg, mem_regdate
 		from noticemember
-		order by mem_no desc
+		order by mem_no
+		desc
+	</select>
+
+	<select id="selectCrudMemberList" parameterType="list"
+		resultMap="CrudMemberResultMap">
+		select
+		m.user_no,user_id,user_name,reg_date,
+		auth
+		from member m
+		left outer
+		join member_auth ma on (m.user_no = ma.user_no)
+		where 1=1
+		<if test="list != null and list.size() > 0">
+			<choose>
+				<!-- list에 'etc' 포함 시 -->
+				<when test="list.contains('etc')">
+					and (
+					auth in
+					<foreach collection="list" item="auth" open="("	separator="," close=")">
+						#{auth}
+					</foreach>
+					or auth not in ('ROLE_MEMBER', 'ROLE_ADMIN')
+					or auth is null
+					)
+				</when>
+				<otherwise>
+					and auth in
+					<foreach collection="list" item="auth" open="("	separator="," close=")">
+						#{auth}
+					</foreach>
+				</otherwise>
+			</choose>
+		</if>
+		order by auth, m.user_no
 	</select>
 </mapper>

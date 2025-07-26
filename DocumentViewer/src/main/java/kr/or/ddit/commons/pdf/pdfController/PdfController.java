@@ -14,14 +14,16 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.element.Paragraph;
 
-import kr.or.ddit.commons.pdf.pdfController.service.IPdfService;
 import kr.or.ddit.commons.pdf.pdfUtil.PdfUtil;
+import kr.or.ddit.commons.pdf.service.IPdfService;
 import kr.or.ddit.service.INoticeService;
+import kr.or.ddit.vo.CrudMember;
 import kr.or.ddit.vo.NoticeMemberVO;
 import lombok.extern.slf4j.Slf4j;
 
@@ -43,18 +45,26 @@ public class PdfController {
 	 * @throws IOException
 	 */
 	@ResponseBody
-	@PostMapping("/preview")
-	public ResponseEntity<byte[]> preview(
-//			@RequestParam(required = false) List<?> dataList,
-//			@RequestParam(required = false) Map<String,Object> paramMap
+	@PostMapping("/memberList")
+	public ResponseEntity<byte[]> memberPdf(
+			@RequestParam(name="auth",required=false) List<String> authList 
+//			@RequestParam(required = false) Map<String,Object> paramMap // 데이터 정제 조건을 담은 맵
 			) throws Exception{
-		
-		List<NoticeMemberVO> dataList = noticeService.selectMemberList();
+		// 멤버리스트 서식에 필요한 데이터 조회
+		List<CrudMember> dataList = noticeService.selectCrudMemberList(authList);
+		// 확장성을 위한 변수를 담을 Map
 		Map<String,Object> paramMap = new HashMap<>();
 		// 가공한 데이터(원하는 VO의 리스트, 문서 양식이나 기타 정보를 담은 맵)를 pdfService.preview()에 전달하면
 		// 완성된 PDF 문서가 담긴 ByteArrayOutputStream를 반환합니다. 
-		ByteArrayOutputStream baos = pdfService.preview(dataList,paramMap);
-		
+		ByteArrayOutputStream baos = pdfService.memberPdf(dataList,paramMap);
+		/*
+			3) PDF 생성 시점과 메모리 사용
+			ByteArrayOutputStream에 PDF를 생성 후 byte[]로 클라이언트 전송하는 방식은 보통 잘 쓰입니다만,
+			큰 문서일 때는 메모리 부담이 크므로 스트리밍 방식이나 임시 파일 사용도 고민해 볼 수 있음.
+			(6) 에러 처리
+			데이터 조회나 PDF 생성 중 오류가 발생하면 적절한 예외 처리 및 에러 메시지를 클라이언트에 보내야 합니다.
+			PDF 생성 실패 시 미리 준비된 에러 페이지 PDF, 또는 JSON 에러 메시지를 반환하는 등 사용자 경험을 고려하세요.
+		 */
 		return ResponseEntity.ok()
 		        .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=ticket.pdf")
 		        .contentType(MediaType.APPLICATION_PDF)
