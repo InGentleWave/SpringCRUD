@@ -13,6 +13,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.util.StringTokenizer;
 
+import com.itextpdf.commons.actions.IEvent;
 import com.itextpdf.commons.actions.IEventHandler;
 import com.itextpdf.io.font.constants.StandardFonts;
 import com.itextpdf.kernel.colors.Color;
@@ -98,7 +99,7 @@ public class C03E03_UFO {
 
     protected class MyEventHandler implements IEventHandler {
 
-        public void handleEvent(Event event) {
+        public void handleEvent(IEvent event) {
             PdfDocumentEvent docEvent = (PdfDocumentEvent) event;
             PdfDocument pdfDoc = docEvent.getDocument();
             PdfPage page = docEvent.getPage();
@@ -133,5 +134,11 @@ public class C03E03_UFO {
 
             pdfCanvas.release();
         }
+
+		@Override
+		public void onEvent(IEvent event) {
+			// TODO Auto-generated method stub
+			
+		}
     }
 }
