@@ -6,7 +6,7 @@
     For more information, please contact iText Software at this address:
     sales@itextpdf.com
  */
-package kr.or.ddit.tutorial.chapter01;
+package kr.or.ddit.commons.pdf.tutorial.chapter01;
 
 import java.io.File;
 import java.io.IOException;
@@ -16,7 +16,7 @@ import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.element.Paragraph;
 
-public class C01E01_HelloWorld {
+public class C01E01_FirstStart {
 
 	//
 	public static final String DEST = "results/chapter01/hello_world.pdf";
@@ -27,7 +27,7 @@ public class C01E01_HelloWorld {
 		// 메모리에 저장된 PDF 문서를 만들기 위해 ByteArrayOutputStream을 매개변수로 받을 수 있음
 		File file = new File(DEST);
 		file.getParentFile().mkdirs();
-		new C01E01_HelloWorld().createPdf(DEST);
+		new C01E01_FirstStart().createPdf(DEST);
 		
 	}
 

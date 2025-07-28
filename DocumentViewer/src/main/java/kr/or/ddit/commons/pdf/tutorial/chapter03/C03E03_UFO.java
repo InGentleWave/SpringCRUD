@@ -6,7 +6,7 @@
     For more information, please contact iText Software at this address:
     sales@itextpdf.com
  */
-package kr.or.ddit.tutorial.chapter03;
+package kr.or.ddit.commons.pdf.tutorial.chapter03;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -43,7 +43,7 @@ import com.itextpdf.layout.properties.VerticalAlignment;
  */
 public class C03E03_UFO {
 
-    public static final String DATA = "src/main/resources/data/ufo.csv";
+    public static final String DATA = "src/main/resources/tutorial_data/ufo.csv";
     public static final String DEST = "results/chapter03/ufo.pdf";
 
     static PdfFont helvetica = null;

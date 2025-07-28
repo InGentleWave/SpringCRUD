@@ -2,10 +2,13 @@ package kr.or.ddit.commons.pdf.pdfTemplate;
 
 import java.io.ByteArrayOutputStream;
 import java.lang.reflect.Method;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.itextpdf.kernel.colors.DeviceRgb;
 import com.itextpdf.kernel.font.PdfFont;
 import com.itextpdf.kernel.geom.PageSize;
 import com.itextpdf.kernel.pdf.PdfDocument;
@@ -14,10 +17,15 @@ import com.itextpdf.layout.Document;
 import com.itextpdf.layout.element.Cell;
 import com.itextpdf.layout.element.ListItem;
 import com.itextpdf.layout.element.Paragraph;
+import com.itextpdf.layout.element.Tab;
+import com.itextpdf.layout.element.TabStop;
 import com.itextpdf.layout.element.Table;
+import com.itextpdf.layout.element.Text;
+import com.itextpdf.layout.properties.TabAlignment;
 import com.itextpdf.layout.properties.TextAlignment;
 import com.itextpdf.layout.properties.UnitValue;
 
+import kr.or.ddit.commons.pdf.pdfUtil.PageNumberEventHandler;
 import kr.or.ddit.commons.pdf.pdfUtil.PdfFontConfig;
 
 public class MemberPdfTemplate implements IPdfTemplate {
@@ -42,7 +50,7 @@ public class MemberPdfTemplate implements IPdfTemplate {
 	/* iText API 기본 구성 start-------------------------------------------- */
 		/* 1. PDF 문서 데이터 생성-------------------------------------------------*/
 		
-		// 생성된 PDF 데이터를 담아 클라이언트로 전달할 baos 생성 
+		// 생성된 PDF 데이터를 담아 클라이언트로 전달할 ByteArrayOutputStream 생성 
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		PdfWriter pdfWriter = new PdfWriter(baos);
 		// 미리보기 할 PDF 문서 메모리에서 생성
@@ -51,14 +59,16 @@ public class MemberPdfTemplate implements IPdfTemplate {
 		/* 2. 문서 크기 및 방향 설정------------------------------------------------*/
 		// 문서 크기(기본값:A4, PageSize.'문서 규격', '직접 크기 지정'으로 변경 가능),
 		PageSize pageSize = PageSize.A4;		// 문서 규격으로 선택
-		//PageSize ps = new PageSize(842,680);	// 직접 크기 지정
+		//PageSize pageSize = new PageSize(842,680);	// 직접 크기 지정
 		
 		// 문서 방향(기본값:세로(portrait), rotate()로 가로(landscape)방향 선택 가능)
 		//pageSize = pageSize.rotate();			// 가로 방향 설정 시 주석 해제
 		
 		// 설정 정보를 바탕으로 document 객체 생성
 		Document document = new Document(pdfDocument,pageSize);
-		
+		/* 레이아웃 설정을 위한 변수 모음-------------------------------------------------*/
+		float docWidth = document.getPdfDocument().getDefaultPageSize().getWidth()
+                - document.getLeftMargin() - document.getRightMargin();
 	/* PDF 문서 양식 데이터 생성 Start--------------------------------------------*/
 		/* 1. 문서 제목 생성--------------------------------------------------*/
 		// Paragraph 요소 객체는 일반적인 문단 객체입니다.
@@ -70,7 +80,7 @@ public class MemberPdfTemplate implements IPdfTemplate {
 		// VO 필드변수 정보 중 표로 출력할 변수명만 '{변수명 : 표 헤더명}' 형태로 입력
 		String[][] fields = {
 				{"userNo", "번호"},
-				{"userId", "회원 id"},
+				{"userId", "회원 ID"},
 				{"userName", "이름"},
 				{"regDate", "회원가입일"},
 				{"authList","회원 권한"}
@@ -92,31 +102,36 @@ public class MemberPdfTemplate implements IPdfTemplate {
 		// 문서 제목 추가
 		document.add(Title);
 		// Table 요소 (표 객체) 추가
-		document.add(memberTable);
+		Paragraph p = new Paragraph();
+		String issueDate = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
+		p.add(new Text("발행일자 : "+issueDate).setFont(regularFont));
+
+		// TabStop: 오른쪽 끝(전체 폭)에 오른쪽 정렬
+		p.addTabStops(new TabStop(docWidth, TabAlignment.RIGHT));
+		p.add(new Tab());
+		p.add(new Text("오른쪽 텍스트").setFont(regularFont)); // 오른쪽 텍스트 입력
+
+		document.add(p);
 		
+		document.add(memberTable);
+		document.add(new Paragraph("테스트1").setFont(regularFont));
+		document.add(new Paragraph("테스트2").setFont(regularFont));
 		
 		// 문서 생성 예시----
-		//makeList(document,Regular);
-		
-		
-	        
-		
-		
-		
-		
-		
-		
-		
+		makeList(document,regularFont);
 	/* 문서 양식 구성 끝	----------------------------------------------------*/
 	/* 사용한 객체 정리		----------------------------------------------------*/
 		document.close();
 		pdfDocument.close();
 		pdfWriter.close();
-		return baos;
+		// 현재 페이지 / 전체 페이지 정보 출력을 위한 후처리 후 반환
+		// 문서마다 반복되는 Header, Footer는 PageNumberEventHandler().totalPage()에서 설정
+		return new PageNumberEventHandler(regularFont).totalPage(baos);
 	}
 	
 	private void makeList(Document document, PdfFont font) {
-		// 주의사항) java.util.list가 아닌 iText API의 list타입입니다.
+		// 주의사항) java.util.list가 아닌 
+		// 			iText API의 com.itextpdf.layout.element.list타입입니다.
 		com.itextpdf.layout.element.List list = new com.itextpdf.layout.element.List()
 	    		// 리스트 항목들은 사용자 단위(예: 12pt)만큼 들여쓰기가 적용됩니다.
 	            .setSymbolIndent(12)
@@ -176,6 +191,9 @@ public class MemberPdfTemplate implements IPdfTemplate {
 	    // 2) 데이터 행 추가
 	    // dataList에 입력된 VO의 종류에 상관없이 대응할 수 있게 자바 리플렉션을 이용했습니다.
 	    // 리플렉션을 통해 컴파일 시점에 정해지지 않은(동적으로 결정되는) 메서드를 런타임에 호출할 수 있습니다.
+	    // 행마다 다른 색을 넣기 위한 rowIndex
+	    int rowIndex = 0;
+	    
 	    for (Object vo : dataList) {
 	    	// dataList의 요소인 VO의 클래스를 clazz에 저장합니다.
 	    	Class<?> clazz = vo.getClass();
@@ -241,28 +259,32 @@ public class MemberPdfTemplate implements IPdfTemplate {
 		            		cellText = "인가 정보가 존재하지 않습니다.";
 		            	}
 		            }
-		            // 테이블에 1칸씩 Cell객체를 추가합니다.
-		            // new Paragraph()자리에 문자열이나 다른 객체를 넣을 수 있습니다.
-		            // new Paragraph()객체를 사용함으로써 메소드체이닝으로 해당 내용에 대한 세팅을 간편하게 설정할 수 있습니다.
-	        		table.addCell(new Cell().add(
-        				new Paragraph(cellText)
-        					.setFont(bodyFont).setFontSize(bodyFontSize)
-        					.setTextAlignment(TextAlignment.CENTER))
-    				);
 	        	} else {
 	        		// fieldName이 List가 아닌 경우의 Cell 추가 과정입니다.
 		            String getterName = "get" + fieldName.substring(0,1).toUpperCase() + fieldName.substring(1);
 		            Method getter = clazz.getMethod(getterName);
 		            Object value = getter.invoke(vo);
 		            // DB에서 조회된 결과가 없거나 ""인 경우 '-'을 출력합니다.
-		            cellText = value == null||value == "" ? "-" : value.toString();
-		            table.addCell(new Cell().add(
-	            		new Paragraph(cellText)
-	            			.setFont(bodyFont).setFontSize(bodyFontSize)
-	            			.setTextAlignment(TextAlignment.CENTER))
-            		);
+		            // 날짜 타입 정보는 형식에 맞게 변환합니다.
+		            if(fieldName.contains("Date")) {
+		            	cellText = value == null||value == "" ? "-" : new SimpleDateFormat("yyyy년 MM월 dd일").format(value);
+		            } else {
+		            	cellText = value == null||value == "" ? "-" : value.toString();
+		            }
 	        	}
+	        	// 배경색 설정: 짝수 행은 흰색, 홀수 행은 연회색
+	    	    DeviceRgb bgColor = (rowIndex % 2 == 0) ? new DeviceRgb(255, 255, 255) : new DeviceRgb(230, 230, 230);
+	        	// 테이블에 1칸씩 Cell객체를 추가합니다.
+	            // new Paragraph()자리에 문자열이나 다른 객체를 넣을 수 있습니다.
+	            // new Paragraph()객체를 사용함으로써 메소드체이닝으로 해당 내용에 대한 세팅을 간편하게 설정할 수 있습니다.
+	        	table.addCell(new Cell()
+	        		.setBackgroundColor(bgColor)
+        			.add(new Paragraph(cellText)
+        			.setFont(bodyFont).setFontSize(bodyFontSize)
+        			.setTextAlignment(TextAlignment.CENTER))
+    			);
 	        }
+	        rowIndex++;
 	    }
 		
 		return table;

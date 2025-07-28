@@ -90,12 +90,7 @@
 	        <artifactId>bouncy-castle-adapter</artifactId>
 	        <version>${itext.version}</version>
 	    </dependency>
-	    <dependency>
-		    <groupId>com.itextpdf</groupId>
-		    <artifactId>kernel</artifactId>
-		    <version>${itext.version}</version>
-		</dependency>
-
+	    
 		<!--
 			p6spy
 			- 데이터베이스 쿼리 로깅 및 모니터링을 위한 라이브러리

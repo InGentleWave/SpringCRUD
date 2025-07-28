@@ -6,7 +6,7 @@
     For more information, please contact iText Software at this address:
     sales@itextpdf.com
  */
-package kr.or.ddit.tutorial.chapter03;
+package kr.or.ddit.commons.pdf.tutorial.chapter03;
 
 import com.itextpdf.io.font.constants.StandardFonts;
 import com.itextpdf.kernel.colors.Color;
@@ -38,7 +38,7 @@ import java.util.StringTokenizer;
  */
 public class C03E02_PremierLeague {
 
-    public static final String DATA = "src/main/resources/data/premier_league.csv";
+    public static final String DATA = "src/main/resources/tutorial_data/premier_league.csv";
     public static final String DEST = "results/chapter03/premier_league.pdf";
 
     Color greenColor = new DeviceCmyk(0.78f, 0, 0.81f, 0.21f);

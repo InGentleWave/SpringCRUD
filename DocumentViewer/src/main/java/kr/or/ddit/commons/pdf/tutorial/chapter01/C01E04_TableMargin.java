@@ -6,7 +6,7 @@
     For more information, please contact iText Software at this address:
     sales@itextpdf.com
  */
-package kr.or.ddit.tutorial.chapter01;
+package kr.or.ddit.commons.pdf.tutorial.chapter01;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -31,7 +31,7 @@ import com.itextpdf.layout.properties.UnitValue;
  */
 public class C01E04_TableMargin {
 	// table 생성에 사용할 가짜 데이터 경로
-	public static final String DATA = "src/main/resources/data/united_states.csv";
+	public static final String DATA = "src/main/resources/tutorial_data/united_states.csv";
 	// 완성한 Pdf 파일 저장 경로
 	public static final String DEST = "results/chapter01/united_states.pdf";
 

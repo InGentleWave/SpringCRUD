@@ -6,7 +6,7 @@
     For more information, please contact iText Software at this address:
     sales@itextpdf.com
  */
-package kr.or.ddit.tutorial.chapter01;
+package kr.or.ddit.commons.pdf.tutorial.chapter01;
 
 import java.io.File;
 import java.io.IOException;
@@ -22,7 +22,6 @@ import com.itextpdf.layout.element.Paragraph;
  * Simple image example.
  */
 public class C01E03_ImageParagraph {
-	// 이미지 파일 크기 이슈 있음?
 //	public static final String DOG = "src/main/resources/img/sample.jpg";
 	public static final String DOG = "src/main/resources/img/chopa.jpg";
 //	public static final String DOG = "src/main/resources/img/python.bmp";
@@ -51,7 +50,7 @@ public class C01E03_ImageParagraph {
 		// 생성자 매개변수에 넣은 문자열로 시작하는 문단 객체 생성
 		// 메서드 체이닝을 통해 원하는 순서대로 이미지 객체나 문자열을 기존 문단에 추가할 수 있다.
 		Paragraph p = new Paragraph("The quick brown ").add(fox).add(" jumps over the lazy ").add(dog);
-		// 완성한 문단 객체를 문서 객체에 추가한다.ㅓ
+		// 완성한 문단 객체를 문서 객체에 추가한다.
 		document.add(p);
 
 		// Close document

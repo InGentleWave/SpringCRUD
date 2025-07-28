@@ -6,7 +6,7 @@
     For more information, please contact iText Software at this address:
     sales@itextpdf.com
  */
-package kr.or.ddit.tutorial.chapter01;
+package kr.or.ddit.commons.pdf.tutorial.chapter01;
 
 import java.io.File;
 import java.io.IOException;
@@ -24,13 +24,13 @@ import com.itextpdf.layout.element.Paragraph;
 /**
  * Simple List example.
  */
-public class C01E02_FontSymbolList {
+public class C01E02_List_Font_Symbol {
         public static final String DEST = "results/chapter01/rick_astley.pdf";
     
     public static void main(String args[]) throws IOException {
         File file = new File(DEST);
         file.getParentFile().mkdirs();
-        new C01E02_FontSymbolList().createPdf(DEST);
+        new C01E02_List_Font_Symbol().createPdf(DEST);
     }
     
     public void createPdf(String dest) throws IOException {

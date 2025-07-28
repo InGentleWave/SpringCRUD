@@ -24,7 +24,6 @@ import kr.or.ddit.commons.pdf.pdfUtil.PdfUtil;
 import kr.or.ddit.commons.pdf.service.IPdfService;
 import kr.or.ddit.service.INoticeService;
 import kr.or.ddit.vo.CrudMember;
-import kr.or.ddit.vo.NoticeMemberVO;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
