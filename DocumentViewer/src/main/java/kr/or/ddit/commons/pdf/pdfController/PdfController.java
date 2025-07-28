@@ -1,3 +1,11 @@
+/*
+    This file is part of the iText (R) project.
+    Copyright (c) 1998-2023 Apryse Group NV
+    Authors: Apryse Software.
+
+    For more information, please contact iText Software at this address:
+    sales@itextpdf.com
+ */
 package kr.or.ddit.commons.pdf.pdfController;
 
 import java.io.ByteArrayOutputStream;
@@ -11,16 +19,11 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.itextpdf.layout.Document;
-import com.itextpdf.layout.element.Paragraph;
-
-import kr.or.ddit.commons.pdf.pdfUtil.PdfUtil;
 import kr.or.ddit.commons.pdf.service.IPdfService;
 import kr.or.ddit.service.INoticeService;
 import kr.or.ddit.vo.CrudMember;
@@ -68,19 +71,5 @@ public class PdfController {
 		        .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=ticket.pdf")
 		        .contentType(MediaType.APPLICATION_PDF)
 		        .body(baos.toByteArray());
-	}
-	
-	@ResponseBody
-	@GetMapping("/download")
-	public ResponseEntity<byte[]> downloadPdf() throws IOException {
-	    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-
-	    Document document = PdfUtil.createPdf(baos);
-	    document.add(new Paragraph("Download다운 Test테스트"));
-	    document.close();
-	    return ResponseEntity.ok()
-	        .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=ticket.pdf")
-	        .contentType(MediaType.APPLICATION_PDF)
-	        .body(baos.toByteArray());
 	}
 }

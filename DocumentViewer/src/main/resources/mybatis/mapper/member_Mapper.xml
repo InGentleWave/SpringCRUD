@@ -1,4 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--     This file is part of the iText (R) project. -->
+<!--     Copyright (c) 1998-2023 Apryse Group NV -->
+<!--     Authors: Apryse Software. -->
+
+<!--     For more information, please contact iText Software at this address: -->
+<!--     sales@itextpdf.com -->
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="kr.or.ddit.mapper.IMemberMapper">
 	<resultMap id="CrudMemberResultMap"
