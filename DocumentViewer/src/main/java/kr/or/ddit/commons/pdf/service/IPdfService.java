@@ -18,4 +18,7 @@ public interface IPdfService {
 
 	public ByteArrayOutputStream memberPdf(List<CrudMember> dataList, Map<String, Object> paramMap) throws Exception;
 
+	public ByteArrayOutputStream sample(Map<String, Object> paramMap) throws Exception;
+
+
 }

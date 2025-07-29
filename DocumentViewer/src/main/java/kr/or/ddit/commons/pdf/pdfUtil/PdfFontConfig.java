@@ -15,7 +15,7 @@ import com.itextpdf.kernel.font.PdfFontFactory;
 import com.itextpdf.kernel.font.PdfFontFactory.EmbeddingStrategy;
 
 public class PdfFontConfig {
-	/* ------------------------------------폰트 Bean 등록------------------------------------*/
+	/* ------------------------------------폰트 등록------------------------------------*/
 	// 한글 지원 폰트 
 	// 프로젝트 내 경로 지정
 	public static final String EXTRALIGHT = "src/main/resources/fonts/MaruBuri-ExtraLight.ttf";

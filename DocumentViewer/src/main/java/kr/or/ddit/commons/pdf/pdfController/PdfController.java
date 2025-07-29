@@ -39,6 +39,7 @@ public class PdfController {
 	
 	@Autowired
 	private IPdfService pdfService;
+	/* -------------------------------------샘플 시작---------------------------------------------*/
 	/**
 	 * 클라이언트로부터 요청과 함께 전달받은 데이터를 바탕으로
 	 * iText API를 활용하여 만든 PDF문서를
@@ -48,14 +49,22 @@ public class PdfController {
 	 */
 	@ResponseBody
 	@PostMapping("/memberList")
-	public ResponseEntity<byte[]> memberPdf(
-			@RequestParam(name="auth",required=false) List<String> authList 
-//			@RequestParam(required = false) Map<String,Object> paramMap // 데이터 정제 조건을 담은 맵
+	public ResponseEntity<byte[]> memberPdfPreview(
+			@RequestParam(name="auth",required=false) List<String> authList,
+			@RequestParam Map<String,String> param
+			// 원하는 매개변수(데이터 조회 조건 등)
 			) throws Exception{
-		// 멤버리스트 서식에 필요한 데이터 조회
-		List<CrudMember> dataList = noticeService.selectCrudMemberList(authList);
-		// 확장성을 위한 변수를 담을 Map
-		Map<String,Object> paramMap = new HashMap<>();
+		
+		// 필요에 따라 수정--------------------------------------------------------------------------------------
+		
+			// 멤버리스트 서식에 필요한 데이터 조회
+			List<CrudMember> dataList = noticeService.selectCrudMemberList(authList);
+			// 확장성을 위한 변수를 담을 Map
+			Map<String,Object> paramMap = new HashMap<>();
+		
+		// 수정할 부분 끝--------------------------------------------------------------------------------------
+		
+		
 		// 가공한 데이터(원하는 VO의 리스트, 문서 양식이나 기타 정보를 담은 맵)를 pdfService.preview()에 전달하면
 		// 완성된 PDF 문서가 담긴 ByteArrayOutputStream를 반환합니다. 
 		ByteArrayOutputStream baos = pdfService.memberPdf(dataList,paramMap);
@@ -67,9 +76,83 @@ public class PdfController {
 			데이터 조회나 PDF 생성 중 오류가 발생하면 적절한 예외 처리 및 에러 메시지를 클라이언트에 보내야 합니다.
 			PDF 생성 실패 시 미리 준비된 에러 페이지 PDF, 또는 JSON 에러 메시지를 반환하는 등 사용자 경험을 고려하세요.
 		 */
+		String downloadName = "PdfDocument"; 
+		downloadName = param.get("downloadName");
 		return ResponseEntity.ok()
-		        .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=ticket.pdf")
+		        .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename="+downloadName+".pdf")
 		        .contentType(MediaType.APPLICATION_PDF)
 		        .body(baos.toByteArray());
+	}
+	/**
+	 * 클라이언트로부터 요청과 함께 전달받은 데이터를 바탕으로
+	 * iText API를 활용하여 만든 PDF문서를
+	 * ResponseEntity 객체에 담아 반환하는 메서드
+	 * @return ResponseEntity<byte[]> iText 활용한 PDF문서 포함 
+	 * @throws IOException
+	 */
+	@ResponseBody
+	@PostMapping("/download")
+	public ResponseEntity<byte[]> memberPdfDownload(
+			@RequestParam(name="auth",required=false) List<String> authList,
+			@RequestParam Map<String,String> param
+			// 원하는 매개변수(데이터 조회 조건 등)
+			) throws Exception{
+		
+		// 필요에 따라 수정--------------------------------------------------------------------------------------
+		
+		// 멤버리스트 서식에 필요한 데이터 조회
+		List<CrudMember> dataList = noticeService.selectCrudMemberList(authList);
+		// 확장성을 위한 변수를 담을 Map
+		Map<String,Object> paramMap = new HashMap<>();
+		
+		// 수정할 부분 끝--------------------------------------------------------------------------------------
+		
+		
+		// 가공한 데이터(원하는 VO의 리스트, 문서 양식이나 기타 정보를 담은 맵)를 pdfService.preview()에 전달하면
+		// 완성된 PDF 문서가 담긴 ByteArrayOutputStream를 반환합니다. 
+		ByteArrayOutputStream baos = pdfService.memberPdf(dataList,paramMap);
+		String downloadName = "PdfDocument"; 
+		downloadName = param.get("downloadName");
+		return ResponseEntity.ok()
+				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename="+downloadName+".pdf")
+				.contentType(MediaType.APPLICATION_PDF)
+				.body(baos.toByteArray());
+	}
+	/* -------------------------------------샘플 끝---------------------------------------------*/
+	/**
+	 * 클라이언트로부터 요청과 함께 전달받은 데이터를 바탕으로
+	 * iText API를 활용하여 만든 PDF문서를
+	 * ResponseEntity 객체에 담아 반환하는 메서드
+	 * @return ResponseEntity<byte[]> iText 활용한 PDF문서 포함 
+	 * @throws IOException
+	 */
+	@ResponseBody
+	@PostMapping("/sample")
+	public ResponseEntity<byte[]> sample(
+			) throws Exception{
+		
+		// 필요에 따라 수정--------------------------------------------------------------------------------------
+		
+		// 확장성을 위한 변수를 담을 Map
+		Map<String,Object> paramMap = new HashMap<>();
+		
+		// 수정할 부분 끝--------------------------------------------------------------------------------------
+		
+		
+		// 가공한 데이터(원하는 VO의 리스트, 문서 양식이나 기타 정보를 담은 맵)를 pdfService.preview()에 전달하면
+		// 완성된 PDF 문서가 담긴 ByteArrayOutputStream를 반환합니다. 
+		ByteArrayOutputStream baos = pdfService.sample(paramMap);
+		/*
+			3) PDF 생성 시점과 메모리 사용
+			ByteArrayOutputStream에 PDF를 생성 후 byte[]로 클라이언트 전송하는 방식은 보통 잘 쓰입니다만,
+			큰 문서일 때는 메모리 부담이 크므로 스트리밍 방식이나 임시 파일 사용도 고민해 볼 수 있음.
+			(6) 에러 처리
+			데이터 조회나 PDF 생성 중 오류가 발생하면 적절한 예외 처리 및 에러 메시지를 클라이언트에 보내야 합니다.
+			PDF 생성 실패 시 미리 준비된 에러 페이지 PDF, 또는 JSON 에러 메시지를 반환하는 등 사용자 경험을 고려하세요.
+		 */
+		return ResponseEntity.ok()
+				.header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=ticket.pdf")
+				.contentType(MediaType.APPLICATION_PDF)
+				.body(baos.toByteArray());
 	}
 }

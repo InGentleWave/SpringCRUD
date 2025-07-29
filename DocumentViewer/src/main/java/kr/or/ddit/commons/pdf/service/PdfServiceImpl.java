@@ -15,6 +15,7 @@ import java.util.Map;
 import org.springframework.stereotype.Service;
 
 import kr.or.ddit.commons.pdf.pdfTemplate.MemberPdfTemplate;
+import kr.or.ddit.commons.pdf.pdfTemplate.sample;
 import kr.or.ddit.vo.CrudMember;
 
 @Service
@@ -24,5 +25,11 @@ public class PdfServiceImpl implements IPdfService{
 	public ByteArrayOutputStream memberPdf(List<CrudMember> dataList, Map<String, Object> paramMap) throws Exception {
 		return new MemberPdfTemplate().createPdf(dataList,paramMap);
 	}
+
+	@Override
+	public ByteArrayOutputStream sample(Map<String, Object> paramMap) throws Exception {
+		return new sample().createPdf(null, paramMap);
+	}
+
 
 }

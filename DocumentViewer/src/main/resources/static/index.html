@@ -11,22 +11,72 @@
 <title>iText 활용 PDF 생성</title>
 </head>
 <body>
-	<h1>Welcome</h1>
-	<h4>회원 권한 별 조회하기</h4>
+	<h1>iText 문서 뷰어 Sample</h1>
+	<h4>문서 생성 및 뷰어 예시 : 회원 권한으로 회원 조회하기</h4>
 	<form id="pdfForm" action="/api/pdf/memberList" method="post" target="_blank">
 		<!-- 데이터 정제 조건 input 태그로 담아 보내기 -->
-		<input type="checkbox" name="auth" value="ROLE_MEMBER"/> 회원<br/>
-		<input type="checkbox" name="auth" value="ROLE_ADMIN"/>	관리자<br/>
-		<input type="checkbox" name="auth" value="etc"/> 미인가자<br/>
-		
+		<input type="checkbox" name="auth" value="ROLE_MEMBER" /> 회원
+		<input type="checkbox" name="auth" value="ROLE_ADMIN" /> 관리자 
+		<input type="checkbox" name="auth" value="etc" /> 미인가자
+		<button type="button" onclick="previewPdfInline()">PDF 미리보기</button><br/>
+		저장할 파일명 : <input type="text" name="downloadName"/>
+		<button type="button" onclick="memberPdfDownload()">PDF 다운로드</button>
 	</form>
-	<button onclick="memberPdfPreview()">새창에서 회원리스트 pdf로 미리보기</button>
-	<button onclick="javascript:location.href='/api/pdf/download'">pdf다운</button>
+	<span>AGPLv3 규정에 따라, 문서 뷰어로 생성하는 모든 PDF 문서의 producer 메타데이터에는 "iText 7 by iText Software" 정보가 설정되어야 합니다.</span><br/>
+	<span>따라서 iText API의 라이센스 정책을 준수하기 위해 <font color="red">PDF 다운로드는 문서 뷰어가 아닌 다운로드 버튼을 통해 제공되어야 합니다.</font></span>
+
+<!-- 	<button onclick="javascript:window.open('https://www.notion.so/iText-23ee28cd5f1c80a88311ed8fe2ea1b22','_blank')"> -->
+<!-- 		가이드 문서 새 창으로 보기 -->
+<!-- 	</button> -->
+	<div id="pdfPreview" style="width: 100%; height: 600px; border: 1px solid #ccc;">
+		<!-- 여기에 iframe 형태로 PDF 렌더링 -->
+	</div>
+
+
+
 </body>
 <script type="text/javascript">
-function memberPdfPreview(){
-	  // 필요한 hidden input 등 생성 혹은 갱신
-	  document.querySelector('#pdfForm').submit();
+	function memberPdfDownload() {
+		// 필요한 hidden input 등 생성 혹은 갱신
+		document.querySelector('#pdfForm').action = "/api/pdf/download";
+		document.querySelector('#pdfForm').target = "";
+
+		document.querySelector('#pdfForm').submit();
+	}
+
+	function previewPdfInline() {
+		try{
+			// 폼 데이터를 FormData 객체로 생성
+			const form = document.querySelector("#pdfForm");
+			const formData = new FormData(form);
+			
+			// fetch 요청 시 body에 formData 포함
+			fetch('/api/pdf/memberList', {
+				method : 'POST',
+				body : formData
+			})
+			.then(res => res.blob()) // Blob 타입으로 받기
+			.then(function(rslt){
+				const pdfUrl = URL.createObjectURL(rslt); // Blob URL 생성
+				const previewContainer = document.getElementById('pdfPreview');
+				previewContainer.innerHTML = ''; // 기존 내용 제거
+		
+				const iframe = document.createElement('iframe');
+				iframe.style.width = '100%';
+				iframe.style.height = '900px';
+				iframe.style.border = 'none';
+				iframe.src = pdfUrl;
+		
+				previewContainer.appendChild(iframe);
+			})
+			.catch(function(error){
+				alert('PDF 가져오기 실패');
+				return;
+			}); // 필요시 body, 헤더 추가
+		} catch (error) {
+			alert("요청 중 오류가 발생했습니다.",error.message);
+		}
+		// 필요시 URL 해제(URL.revokeObjectURL(pdfUrl)) — iframe 닫힐 때 수행 권장
 	}
 </script>
 </html>

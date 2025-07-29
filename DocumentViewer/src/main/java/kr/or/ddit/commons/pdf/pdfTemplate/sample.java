@@ -36,7 +36,7 @@ import com.itextpdf.layout.properties.UnitValue;
 import kr.or.ddit.commons.pdf.pdfUtil.PageNumberEventHandler;
 import kr.or.ddit.commons.pdf.pdfUtil.PdfFontConfig;
 
-public class MemberPdfTemplate implements IPdfTemplate {
+public class sample implements IPdfTemplate {
 	
 	/**
 	 * 클라이언트로부터 요청과 함께 전달받은 데이터를 바탕으로
@@ -84,8 +84,8 @@ public class MemberPdfTemplate implements IPdfTemplate {
 		pdfDocument.getDocumentInfo().setProducer("iText 7 by iText Software");
 		/* 2. 문서 크기 및 방향 설정------------------------------------------------*/
 		// 문서 크기(기본값:A4, PageSize.'문서 규격', '직접 크기 지정'으로 변경 가능),
-//		PageSize pageSize = PageSize.A4;		// 문서 규격으로 선택
-		PageSize pageSize = new PageSize(842,680);	// 직접 크기 지정
+		PageSize pageSize = PageSize.A4;		// 문서 규격으로 선택
+//		PageSize pageSize = new PageSize(842,680);	// 직접 크기 지정
 		
 		// 문서 방향(기본값:세로(portrait), rotate()로 가로(landscape)방향 선택 가능)
 		//pageSize = pageSize.rotate();			// 가로 방향 설정 시 주석 해제
