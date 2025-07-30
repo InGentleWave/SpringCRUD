@@ -6,7 +6,7 @@
     For more information, please contact iText Software at this address:
     sales@itextpdf.com
  */
-package kr.or.ddit.commons.pdf.tutorial.chapter01;
+package kr.or.ddit.commons.pdf.iTextTutorial.chapter01;
 
 import java.io.BufferedReader;
 import java.io.File;
