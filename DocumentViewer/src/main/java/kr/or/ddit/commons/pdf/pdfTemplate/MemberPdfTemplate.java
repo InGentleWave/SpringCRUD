@@ -84,8 +84,8 @@ public class MemberPdfTemplate implements IPdfTemplate {
 		pdfDocument.getDocumentInfo().setProducer("iText 7 by iText Software");
 		/* 2. 문서 크기 및 방향 설정------------------------------------------------*/
 		// 문서 크기(기본값:A4, PageSize.'문서 규격', '직접 크기 지정'으로 변경 가능),
-//		PageSize pageSize = PageSize.A4;		// 문서 규격으로 선택
-		PageSize pageSize = new PageSize(842,680);	// 직접 크기 지정
+		PageSize pageSize = PageSize.A4;		// 문서 규격으로 선택
+//		PageSize pageSize = new PageSize(842,680);	// 직접 크기 지정
 		
 		// 문서 방향(기본값:세로(portrait), rotate()로 가로(landscape)방향 선택 가능)
 		//pageSize = pageSize.rotate();			// 가로 방향 설정 시 주석 해제
@@ -305,7 +305,7 @@ public class MemberPdfTemplate implements IPdfTemplate {
 		            }
 	        	}
 	        	// 배경색 설정: 짝수 행은 흰색, 홀수 행은 연회색
-	    	    DeviceRgb bgColor = (rowIndex % 2 == 0) ? new DeviceRgb(255, 255, 255) : new DeviceRgb(230, 230, 230);
+	    	    DeviceRgb bgColor = (rowIndex % 2 == 1) ? new DeviceRgb(255, 255, 255) : new DeviceRgb(230, 230, 230);
 	        	// 테이블에 1칸씩 Cell객체를 추가합니다.
 	            // new Paragraph()자리에 문자열이나 다른 객체를 넣을 수 있습니다.
 	            // new Paragraph()객체를 사용함으로써 메소드체이닝으로 해당 내용에 대한 세팅을 간편하게 설정할 수 있습니다.
